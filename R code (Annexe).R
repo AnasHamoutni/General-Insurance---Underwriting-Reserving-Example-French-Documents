@@ -1,23 +1,29 @@
 #TRIANGLE
   
-  library(sqldf) library(ChainLadder) s=read.csv2("trii.csv")
+  library(sqldf) 
+  library(ChainLadder) 
+  s=read.csv2("trii.csv")
   
-  data=sqldf("SELECT ANNSIN,ANNDEV,sum(charge)as charg FROM s GROUP BY ANNSIN,ANNDEV") data$ANNDEV= data$ANNDEV- data$ANNSIN
+  data=sqldf("SELECT ANNSIN,ANNDEV,sum(charge)as charg FROM s GROUP BY ANNSIN,ANNDEV")
+  data$ANNDEV= data$ANNDEV- data$ANNSIN
   names(data)=c("origin","devellopement","cumcharge")
   
-  charg <- as.triangle(data, origin="origin", dev="devellopement", value="cumcharge") charg=incr2cum(charg)
+  charg <- as.triangle(data, origin="origin", dev="devellopement", value="cumcharge") 
+  charg=incr2cum(charg)
   
   
 #Chain ladder
     
     
     
-    lambda=rep(1,14) for(k in 1:14){
+    lambda=rep(1,14)
+    for(k in 1:14){
       lambda[k]=sum(charg[1:(15-k),k+1])/sum(charg[1:(15-k),k])
       
     }
   
-  M=charg for(j in 1:14){
+  M=charg
+  for(j in 1:14){
     for(i in (16-j):15){
       
       M[i,j+1]=M[i,j]*lambda[j]}
@@ -39,11 +45,14 @@
   ez=1:14
   rego=lm(ef~ez) 
   u=seq(15,30)
-  vf=predict(rego,newdata=data.frame(ez=u)) factor=prod(1+exp(vf)) chargeult=M[,15]*factor paiement=diag(M[,15:1]) provision=chargeult-paiement sum(provision)
+  vf=predict(rego,newdata=data.frame(ez=u)) factor=prod(1+exp(vf)) chargeult=M[,15]*factor paiement=diag(M[,15:1]) 
+  provision=chargeult-paiement
+  sum(provision)
   
   //LONDON CHAIN///
     
-    lambda=rep(0,14) beta=rep(0,14)
+  lambda=rep(0,14)
+  beta=rep(0,14)
   
   for(j in 1:13)
     
@@ -78,7 +87,10 @@
     
     
     
-    a=rep(0,21) c=matrix(0,nrow=100,ncol=14) n=matrix(0,nrow=100,ncol=14) m=matrix(0,nrow=100,ncol=14)
+    a=rep(0,21)
+    c=matrix(0,nrow=100,ncol=14) 
+    n=matrix(0,nrow=100,ncol=14)
+    m=matrix(0,nrow=100,ncol=14)
   
   
   
@@ -141,11 +153,13 @@
   
 #MakCHAINLADDER
     
-    M<-MackChainLadder(charg,est.sigma = "Mack")
+  M<-MackChainLadder(charg,est.sigma = "Mack")
   
-  M$f ef=log(M$f-1) ez=1:14
+  M$f ef=log(M$f-1)
+  ez=1:14
   
-  rego=lm(ef[-15]~ez) u=seq(15,30)
+  rego=lm(ef[-15]~ez) 
+  u=seq(15,30)
   
   vf=predict(rego,newdata=data.frame(ez=u)) factor=prod(1+exp(vf)) chargeult=M$FullTriangle[,15]*factor paiement=diag(charg[,15:1]) 
   
@@ -155,7 +169,7 @@
   
 #GLM#LOGNORMALE
     
-    ligne<- rep(1:15,15) 
+  ligne<- rep(1:15,15) 
   
   colonne<-rep(1:15,each=15) 
   
@@ -163,7 +177,8 @@
   
   YY
   
-  Y<-as.vector(YY) lig<-as.factor(ligne)
+  Y<-as.vector(YY) 
+  lig<-as.factor(ligne)
   
   col<-as.factor(colonne) cbind(Y,lig,col)
   
